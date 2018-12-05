@@ -16,4 +16,8 @@ public class MainActivity extends AppCompatActivity {
     public void registerRedirect(View v) {
         startActivity(new Intent(this, RegisterActivity.class));
     }
+
+    public void chatListRedirect(View v) {
+        startActivity(new Intent(this, ChatListActivity.class));
+    }
 }
