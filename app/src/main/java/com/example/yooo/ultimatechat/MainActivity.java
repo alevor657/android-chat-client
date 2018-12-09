@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 
@@ -18,7 +20,7 @@ import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    User currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +33,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void chatListRedirect(View v) {
         this.trySignIn();
-//        startActivity(new Intent(this, ChatListActivity.class));
+        EditText username = findViewById(R.id.username_input);
+        currentUser = new User(username.getText().toString(), null);
+        Intent intent = new Intent(this, ChatListActivity.class);
+        intent.putExtra("User", currentUser);
+        startActivity(intent);
     }
 
     public void trySignIn() {
@@ -65,5 +71,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                 );
+
     }
 }
