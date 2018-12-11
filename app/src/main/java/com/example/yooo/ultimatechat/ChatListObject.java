@@ -16,6 +16,7 @@ public class ChatListObject extends AppCompatActivity {
     private ChatListAdapter mMessageAdapter;
     private List<Message> messages;
     User currentUser;
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +24,12 @@ public class ChatListObject extends AppCompatActivity {
         setContentView(R.layout.activiy_chatview);
         messages = new ArrayList<>();
         currentUser = (User) getIntent().getSerializableExtra("User");
+        name = (String) getIntent().getSerializableExtra("Name");
         mMessageRecycler = findViewById(R.id.reyclerview_message_list);
         mMessageAdapter = new ChatListAdapter(this, messages, currentUser);
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
         mMessageRecycler.setAdapter(mMessageAdapter);
+        setTitle(name);
 
         View button = findViewById(R.id.button_chatbox_send);
         final EditText editBox = findViewById(R.id.edittext_chatbox);
@@ -41,5 +44,13 @@ public class ChatListObject extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
