@@ -19,14 +19,14 @@ import java.util.List;
 import java.util.Objects;
 
 public class ChatListActivity extends AppCompatActivity {
-    User currentUser;
+    UserCredentials currentUser;
     ViewGroup chatListLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatlist);
-        currentUser = (User) getIntent().getSerializableExtra("User");
+        currentUser = UserCredentials.getInstance();
         chatListLayout = findViewById(R.id.chatListLayout);
         final View addNewChat = findViewById(R.id.addNewChat);
         addNewChat.setOnClickListener(new View.OnClickListener() {
@@ -49,8 +49,8 @@ public class ChatListActivity extends AppCompatActivity {
                         if(chatName.length() > 0) {
                             final View newChatView = LayoutInflater.from(ChatListActivity.this).inflate(R.layout.chat_object, null);
                             final Intent intent = new Intent(ChatListActivity.this, ChatListObject.class);
-                            intent.putExtra("User", currentUser);
-                            intent.putExtra("Name", chatName);
+//                            intent.putExtra("User", currentUser);
+//                            intent.putExtra("Name", chatName);
                             newChatView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

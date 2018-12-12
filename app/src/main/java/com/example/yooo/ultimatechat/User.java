@@ -12,6 +12,12 @@ public class User implements Serializable {
         this.profilePictureUrl = profilePictureUrl;
     }
 
+//    User()
+//    {
+//        this.username = username;
+//        this.profilePictureUrl = profilePictureUrl;
+//    }
+
     public String getUsername() {
         return username;
     }

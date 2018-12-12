@@ -15,7 +15,6 @@ public class ChatListObject extends AppCompatActivity {
     private RecyclerView mMessageRecycler;
     private ChatListAdapter mMessageAdapter;
     private List<Message> messages;
-    User currentUser;
     String name;
 
     @Override
@@ -23,10 +22,9 @@ public class ChatListObject extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activiy_chatview);
         messages = new ArrayList<>();
-        currentUser = (User) getIntent().getSerializableExtra("User");
-        name = (String) getIntent().getSerializableExtra("Name");
+        name = UserCredentials.getInstance().getUsername();
         mMessageRecycler = findViewById(R.id.reyclerview_message_list);
-        mMessageAdapter = new ChatListAdapter(this, messages, currentUser);
+        mMessageAdapter = new ChatListAdapter(this, messages, UserCredentials.getInstance());
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
         mMessageRecycler.setAdapter(mMessageAdapter);
         setTitle(name);
@@ -38,7 +36,7 @@ public class ChatListObject extends AppCompatActivity {
             public void onClick(View v) {
                 if(editBox.getText().length() > 0)
                 {
-                    Message message = new Message(editBox.getText().toString(), currentUser, Calendar.getInstance().getTimeInMillis());
+                    Message message = new Message(editBox.getText().toString(), new User("test", null), Calendar.getInstance().getTimeInMillis());
                     mMessageAdapter.addMessage(message);
                     editBox.setText("");
                 }

@@ -16,9 +16,9 @@ public class ChatListAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
     private List<Message> mMessageList;
-    private User mCurrentUser;
+    private UserCredentials mCurrentUser;
 
-    public ChatListAdapter(Context context, List<Message> messageList, User currentUser) {
+    public ChatListAdapter(Context context, List<Message> messageList, UserCredentials currentUser) {
         mContext = context;
         mMessageList = messageList;
         mCurrentUser = currentUser;

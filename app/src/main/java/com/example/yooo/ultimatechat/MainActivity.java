@@ -1,15 +1,19 @@
 package com.example.yooo.ultimatechat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -20,7 +24,6 @@ import okhttp3.Response;
 
 
 public class MainActivity extends AppCompatActivity {
-    User currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,44 +36,39 @@ public class MainActivity extends AppCompatActivity {
 
     public void chatListRedirect(View v) {
         this.trySignIn();
-        EditText username = findViewById(R.id.username_input);
-        currentUser = new User(username.getText().toString(), null);
-        Intent intent = new Intent(this, ChatListActivity.class);
-        intent.putExtra("User", currentUser);
-        startActivity(intent);
+
+        if (UserCredentials.getInstance().getToken() != null) {
+            Intent intent = new Intent(this, ChatListActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void trySignIn() {
         // Get user credentials from input fields
-        UserCredentials creds = new UserCredentials(findViewById(R.id.username_input), findViewById(R.id.password_input));
+        String username = ((EditText) findViewById(R.id.username_input)).getText().toString();
+        String password = ((EditText) findViewById(R.id.password_input)).getText().toString();
+
+        UserCredentials creds = UserCredentials.getInstance();
+        creds.setUsername(username);
+        creds.setPassword(password);
 
         // Parse to JSON
         String json = new Gson().toJson(creds);
 
-        RequestBody body = RequestBody.create(AuthAPI.MEDIA_TYPE, json);
+        AuthAPI.LoginRequest lr = new AuthAPI.LoginRequest();
 
-        Request request = new Request.Builder()
-                .url(AuthAPI.SIGN_IN_URL)
-                .post(body)
-                .build();
+        try {
+            creds = lr.execute(json).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
-        OkHttpClient client = new OkHttpClient();
-
-        client
-                .newCall(request)
-                .enqueue(
-                        new Callback() {
-                            @Override
-                            public void onFailure(Call call, IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onResponse(Call call, final Response response) throws IOException {
-                                // TODO: Do the redirect logic...
-                            }
-                        }
-                );
-
+        if (creds == null) {
+            Toast.makeText(getApplicationContext(), AuthAPI.LOGIN_ATTEMPT_FAILED, Toast.LENGTH_LONG).show();
+        } else {
+            UserCredentials.setInstance(creds);
+        }
     }
 }
