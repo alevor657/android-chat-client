@@ -46,8 +46,10 @@ public class AuthAPI {
             UserCredentials uc = null;
 
             try {
-                if (res.isSuccessful()) {
-                    uc = new Gson().fromJson(res.body().string(), UserCredentials.class);
+                if (res != null) {
+                    if (res.isSuccessful()) {
+                        uc = new Gson().fromJson(res.body().string(), UserCredentials.class);
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
