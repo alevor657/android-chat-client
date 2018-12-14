@@ -61,6 +61,7 @@ public class ChatListActivity extends AppCompatActivity {
     class onRooms implements Emitter.Listener {
         @Override
         public void call(Object... args) {
+            Log.i("AAA", "Got rooms");
             String[] rooms = new Gson().fromJson((String) args[0], String[].class);
 
             for (final String room : rooms) {
