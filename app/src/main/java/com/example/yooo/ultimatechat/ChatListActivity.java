@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -38,7 +39,7 @@ public class ChatListActivity extends AppCompatActivity {
         addNewChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addNewChat();
+                showCreationDialog();
             }
         });
 
@@ -61,29 +62,49 @@ public class ChatListActivity extends AppCompatActivity {
     class onRooms implements Emitter.Listener {
         @Override
         public void call(Object... args) {
-            Log.i("AAA", "Got rooms");
-            String[] rooms = new Gson().fromJson((String) args[0], String[].class);
+            // Clear all chats
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    chatListLayout.removeViews(1, chatListLayout.getChildCount() - 1);
+                }
+            });
 
-            for (final String room : rooms) {
+            Log.i("AAA", "Got rooms");
+            String[] roomNames = new Gson().fromJson((String) args[0], String[].class);
+
+            // Repopulate chats
+            for (final String name : roomNames) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        createNewRoom(room);
+                        addNewChat(name);
                     }
                 });
             }
         }
-
     }
 
-    private void addNewChat() {
+    private void showCreationDialog() {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View addChatForm = Objects.requireNonNull(inflater).inflate(R.layout.add_chat_form, null, false);
         final EditText newChatText = addChatForm.findViewById(R.id.newChatText);
 
         new AlertDialog.Builder(this).setView(addChatForm)
                 .setTitle("Add new chat")
-                .setPositiveButton("Add", this.createNewRoom(newChatText.getText().toString()))
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        final String chatName = newChatText.getText().toString();
+
+                        if (chatName.length() > 0) {
+                            WebSocketControls.getSocket().emit(WebSocketControls.PUBLISH_NEW_ROOM, chatName);
+                            Log.d("AAA", "Sent new room");
+                        } else {
+                            dialog.cancel();
+                        }
+                    }
+
+                })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -92,49 +113,36 @@ public class ChatListActivity extends AppCompatActivity {
                 }).show();
     }
 
-    public DialogInterface.OnClickListener createNewRoom(final String chatName) {
-        return new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-
-                WebSocketControls.getSocket().emit(WebSocketControls.PUBLISH_NEW_ROOM, chatName);
-                Log.d("AAA", "Sent new room");
-
-                if(chatName.length() > 0) {
-                    final View newChatView = LayoutInflater.from(ChatListActivity.this).inflate(R.layout.chat_object, null);
-                    final Intent intent = new Intent(ChatListActivity.this, ChatListObject.class);
-                    newChatView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startActivity(intent);
-                        }
-                    });
-                    newChatView.setOnTouchListener(new OnSwipeTouchListener(ChatListActivity.this.getApplicationContext()){
-                        @Override
-                        public void onSwipeRight() {
-                            new AlertDialog.Builder(ChatListActivity.this)
-                                    .setTitle("Do you want to delete this chat?")
-                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            chatListLayout.removeView(newChatView);
-                                        }})
-                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }})
-                                    .show();
-                        }
-                    });
-                    TextView newChatText = newChatView.findViewById(R.id.chatName);
-                    newChatText.setText(chatName);
-                    chatListLayout.addView(newChatView);
-                } else {
-                    dialog.cancel();
-                }
+    public void addNewChat(String chatName) {
+        final View newChatView = LayoutInflater.from(ChatListActivity.this).inflate(R.layout.chat_object, null);
+        final Intent intent = new Intent(ChatListActivity.this, ChatListObject.class);
+        newChatView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(intent);
             }
-
-        };
+        });
+        newChatView.setOnTouchListener(new OnSwipeTouchListener(ChatListActivity.this.getApplicationContext()){
+            @Override
+            public void onSwipeRight() {
+                new AlertDialog.Builder(ChatListActivity.this)
+                        .setTitle("Do you want to delete this chat?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                chatListLayout.removeView(newChatView);
+                            }})
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }})
+                        .show();
+            }
+        });
+        TextView newChatText = newChatView.findViewById(R.id.chatName);
+        newChatText.setText(chatName);
+        chatListLayout.addView(newChatView);
     }
 
     public class OnSwipeTouchListener implements View.OnTouchListener {

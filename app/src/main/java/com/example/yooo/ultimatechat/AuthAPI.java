@@ -18,8 +18,8 @@ public class AuthAPI {
     public static final String REGISTER_PASSWORDS_DO_NOT_MATCH = "Sorry, provided passwords did not match";
     public static final String REGISTER_ATTEMPT_FAILED = "Sorry, this email or username is already taken or credentials format is bad";
 
-    public static final HttpUrl SIGN_IN_URL = HttpUrl.parse("http://192.168.1.63:1338/user/signin");
-    public static final HttpUrl SIGN_UP_URL = HttpUrl.parse("http://192.168.1.63:1338/user/signup");
+    public static final HttpUrl SIGN_IN_URL = HttpUrl.parse("http://192.168.1.48:1338/user/signin");
+    public static final HttpUrl SIGN_UP_URL = HttpUrl.parse("http://192.168.1.48:1338/user/signup");
     public static final MediaType MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
 
     public static class LoginRequest extends AsyncTask<String, Void, UserCredentials> {
