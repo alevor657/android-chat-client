@@ -12,6 +12,8 @@ class WebSocketControls {
     public static final String REQUEST_ROOM_NAMES = "get rooms";
     public static final String PUBLISH_NEW_ROOM = "new room";
     public static final String RECIEVED_ROOMS = "rooms";
+    public static final String DELETE_ROOM = "delete room";
+    public static final String ERR_ROOM_EXISTS = "ERR_ROOM_EXISTS";
 
 
     private static Socket mSocket;

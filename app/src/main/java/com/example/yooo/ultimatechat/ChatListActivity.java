@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -48,6 +49,8 @@ public class ChatListActivity extends AppCompatActivity {
 
         socket.on(Socket.EVENT_CONNECT, new onConnect());
         socket.on(WebSocketControls.RECIEVED_ROOMS, new onRooms());
+        socket.on(WebSocketControls.ERR_ROOM_EXISTS, new onErrorRoomExits());
+
 
         socket.connect();
     }
@@ -56,6 +59,18 @@ public class ChatListActivity extends AppCompatActivity {
         @Override
         public void call(Object... args) {
             WebSocketControls.getSocket().emit(WebSocketControls.REQUEST_ROOM_NAMES);
+        }
+    }
+
+    class onErrorRoomExits implements Emitter.Listener {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "Error, room with given name exists!", Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 
@@ -113,7 +128,7 @@ public class ChatListActivity extends AppCompatActivity {
                 }).show();
     }
 
-    public void addNewChat(String chatName) {
+    public void addNewChat(final String chatName) {
         final View newChatView = LayoutInflater.from(ChatListActivity.this).inflate(R.layout.chat_object, null);
         final Intent intent = new Intent(ChatListActivity.this, ChatListObject.class);
         newChatView.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +145,7 @@ public class ChatListActivity extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                chatListLayout.removeView(newChatView);
+                                WebSocketControls.getSocket().emit(WebSocketControls.DELETE_ROOM, chatName);
                             }})
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
