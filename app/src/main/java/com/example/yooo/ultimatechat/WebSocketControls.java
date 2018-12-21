@@ -9,11 +9,19 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 
 class WebSocketControls {
-    public static final String REQUEST_ROOM_NAMES = "get rooms";
-    public static final String PUBLISH_NEW_ROOM = "new room";
-    public static final String RECIEVED_ROOMS = "rooms";
-    public static final String DELETE_ROOM = "delete room";
+    // Client can emit:
+    public static final String REQUEST_ROOM_NAMES = "GET_ROOMS";
+    public static final String PUBLISH_NEW_ROOM = "NEW_ROOM";
+    public static final String DELETE_ROOM = "DELETE_ROOM";
+    public static final String JOIN_ROOM = "JOIN_ROOM";
+    public static final String LEAVE_ROOM = "LEAVE_ROOM";
+    public static final String MESSAGE_SEND = "MESSAGE_SEND";
+
+
+    // Server emits:
     public static final String ERR_ROOM_EXISTS = "ERR_ROOM_EXISTS";
+    public static final String REPOPULATE_ROOMS = "REPOPULATE_ROOMS";
+    public static final String NEW_MESSAGE = "NEW_MESSAGE";
 
 
     private static Socket mSocket;

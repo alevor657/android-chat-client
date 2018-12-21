@@ -4,6 +4,7 @@ public class Message {
     private String message;
     private User sender;
     private long createdAt;
+    private String room = null;
 
     public Message(String message, User sender, long createdAt) {
         this.message = message;
@@ -33,5 +34,13 @@ public class Message {
 
     public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
     }
 }

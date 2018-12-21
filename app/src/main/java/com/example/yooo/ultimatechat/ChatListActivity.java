@@ -48,7 +48,7 @@ public class ChatListActivity extends AppCompatActivity {
         Socket socket = WebSocketControls.getSocket();
 
         socket.on(Socket.EVENT_CONNECT, new onConnect());
-        socket.on(WebSocketControls.RECIEVED_ROOMS, new onRooms());
+        socket.on(WebSocketControls.REPOPULATE_ROOMS, new onRooms());
         socket.on(WebSocketControls.ERR_ROOM_EXISTS, new onErrorRoomExits());
 
 
@@ -131,9 +131,11 @@ public class ChatListActivity extends AppCompatActivity {
     public void addNewChat(final String chatName) {
         final View newChatView = LayoutInflater.from(ChatListActivity.this).inflate(R.layout.chat_object, null);
         final Intent intent = new Intent(ChatListActivity.this, ChatListObject.class);
+        intent.putExtra("room", chatName);
         newChatView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                WebSocketControls.getSocket().emit(WebSocketControls.JOIN_ROOM, chatName);
                 startActivity(intent);
             }
         });
