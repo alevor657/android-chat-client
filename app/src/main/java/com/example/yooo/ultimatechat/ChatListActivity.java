@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -53,6 +52,12 @@ public class ChatListActivity extends AppCompatActivity {
 
 
         socket.connect();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        WebSocketControls.getSocket().emit(WebSocketControls.REQUEST_ROOM_NAMES);
     }
 
     class onConnect implements Emitter.Listener {
@@ -148,6 +153,23 @@ public class ChatListActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 WebSocketControls.getSocket().emit(WebSocketControls.DELETE_ROOM, chatName);
+                            }})
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }})
+                        .show();
+            }
+
+            @Override
+            public void onSwipeLeft() {
+                new AlertDialog.Builder(ChatListActivity.this)
+                        .setTitle("Do you want to leave this chat?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                WebSocketControls.getSocket().emit(WebSocketControls.LEAVE_ROOM, chatName);
                             }})
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override

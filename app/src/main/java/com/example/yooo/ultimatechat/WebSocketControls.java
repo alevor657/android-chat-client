@@ -16,12 +16,14 @@ class WebSocketControls {
     public static final String JOIN_ROOM = "JOIN_ROOM";
     public static final String LEAVE_ROOM = "LEAVE_ROOM";
     public static final String MESSAGE_SEND = "MESSAGE_SEND";
+    public static final String REQUEST_MESSAGE_HISTORY = "REQUEST_MESSAGE_HISTORY";
 
 
     // Server emits:
     public static final String ERR_ROOM_EXISTS = "ERR_ROOM_EXISTS";
     public static final String REPOPULATE_ROOMS = "REPOPULATE_ROOMS";
     public static final String NEW_MESSAGE = "NEW_MESSAGE";
+    public static final String RESPONSE_MESSAGE_HISTORY = "RESPONSE_MESSAGE_HISTORY";
 
 
     private static Socket mSocket;

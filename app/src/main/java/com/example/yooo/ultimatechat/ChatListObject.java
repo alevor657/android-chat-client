@@ -59,6 +59,14 @@ public class ChatListObject extends AppCompatActivity {
 
         Socket socket = WebSocketControls.getSocket();
         socket.on(WebSocketControls.NEW_MESSAGE, new onMessage());
+        socket.on(WebSocketControls.RESPONSE_MESSAGE_HISTORY, new onMessageHistory());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String chatName = getIntent().getStringExtra("room");
+        WebSocketControls.getSocket().emit(WebSocketControls.REQUEST_MESSAGE_HISTORY, chatName);
     }
 
     class onMessage implements Emitter.Listener {
@@ -68,6 +76,22 @@ public class ChatListObject extends AppCompatActivity {
                 @Override
                 public void run() {
                     mMessageAdapter.addMessage(new Gson().fromJson(args[0].toString(), Message.class));
+                }
+            });
+        }
+    }
+
+    class onMessageHistory implements Emitter.Listener {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Message[] messages = new Gson().fromJson(args[0].toString(), Message[].class);
+
+                    for (Message message: messages) {
+                        mMessageAdapter.addMessage(message);
+                    }
                 }
             });
         }
