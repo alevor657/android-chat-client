@@ -1,6 +1,12 @@
 package com.example.yooo.ultimatechat;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +26,7 @@ public class ChatListObject extends AppCompatActivity {
     private RecyclerView mMessageRecycler;
     private ChatListAdapter mMessageAdapter;
     private List<Message> messages;
+    public static boolean appForegrounded;
     String name;
 
     @Override
@@ -60,13 +67,21 @@ public class ChatListObject extends AppCompatActivity {
         Socket socket = WebSocketControls.getSocket();
         socket.on(WebSocketControls.NEW_MESSAGE, new onMessage());
         socket.on(WebSocketControls.RESPONSE_MESSAGE_HISTORY, new onMessageHistory());
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        ChatListObject.appForegrounded = true;
         String chatName = getIntent().getStringExtra("room");
         WebSocketControls.getSocket().emit(WebSocketControls.REQUEST_MESSAGE_HISTORY, chatName);
+    }
+
+    @Override
+    protected void onStop() {
+        ChatListObject.appForegrounded = false;
+        super.onStop();
     }
 
     class onMessage implements Emitter.Listener {
@@ -75,7 +90,25 @@ public class ChatListObject extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mMessageAdapter.addMessage(new Gson().fromJson(args[0].toString(), Message.class));
+                    Message m = new Gson().fromJson(args[0].toString(), Message.class);
+
+                    if (!m.getSender().getUsername().equals(UserCredentials.getInstance().getUsername()) && !appForegrounded) {
+                        Intent intent = getIntent();
+                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                        Notification n = new NotificationCompat.Builder(getApplicationContext(), "Ultimate chat")
+                                .setContentTitle(m.getSender().getUsername())
+                                .setContentText(m.getMessage())
+                                .setSmallIcon(R.drawable.ic_launcher_background)
+                                .setContentIntent(pendingIntent)
+                                .setAutoCancel(true)
+                                .build();
+
+
+                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+                        notificationManager.notify(0, n);
+                    }
+                    mMessageAdapter.addMessage(m);
                 }
             });
         }

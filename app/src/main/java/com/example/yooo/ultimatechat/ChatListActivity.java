@@ -185,12 +185,6 @@ public class ChatListActivity extends AppCompatActivity {
         chatListLayout.addView(newChatView);
     }
 
-    @Override
-    protected void onDestroy() {
-        WebSocketControls.getSocket().emit(WebSocketControls.USER_LEAVE, UserCredentials.getInstance().getUsername());
-        super.onDestroy();
-    }
-
     public class OnSwipeTouchListener implements View.OnTouchListener {
 
         private final GestureDetector gestureDetector;
