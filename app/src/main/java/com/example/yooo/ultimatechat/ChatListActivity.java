@@ -63,6 +63,7 @@ public class ChatListActivity extends AppCompatActivity {
     class onConnect implements Emitter.Listener {
         @Override
         public void call(Object... args) {
+            WebSocketControls.getSocket().emit(WebSocketControls.NEW_USER, UserCredentials.getInstance().getUsername());
             WebSocketControls.getSocket().emit(WebSocketControls.REQUEST_ROOM_NAMES);
         }
     }
@@ -182,6 +183,12 @@ public class ChatListActivity extends AppCompatActivity {
         TextView newChatText = newChatView.findViewById(R.id.chatName);
         newChatText.setText(chatName);
         chatListLayout.addView(newChatView);
+    }
+
+    @Override
+    protected void onDestroy() {
+        WebSocketControls.getSocket().emit(WebSocketControls.USER_LEAVE, UserCredentials.getInstance().getUsername());
+        super.onDestroy();
     }
 
     public class OnSwipeTouchListener implements View.OnTouchListener {

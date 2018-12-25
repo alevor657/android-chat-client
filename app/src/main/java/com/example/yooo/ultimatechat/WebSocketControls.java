@@ -17,7 +17,8 @@ class WebSocketControls {
     public static final String LEAVE_ROOM = "LEAVE_ROOM";
     public static final String MESSAGE_SEND = "MESSAGE_SEND";
     public static final String REQUEST_MESSAGE_HISTORY = "REQUEST_MESSAGE_HISTORY";
-
+    public static final String NEW_USER = "NEW_USER";
+    public static final String USER_LEAVE = "USER_LEAVE";
 
     // Server emits:
     public static final String ERR_ROOM_EXISTS = "ERR_ROOM_EXISTS";
