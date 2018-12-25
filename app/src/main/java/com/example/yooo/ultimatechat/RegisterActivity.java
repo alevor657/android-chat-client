@@ -12,11 +12,25 @@ import com.google.gson.Gson;
 import java.util.concurrent.ExecutionException;
 
 public class RegisterActivity extends AppCompatActivity {
+    CredentialsStorage storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        this.storage = new CredentialsStorage(getApplicationContext());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (storage.getUserCredentials() != null) {
+            UserCredentials.setInstance(storage.getUserCredentials());
+            Intent intent = new Intent(this, ChatListActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     public void tryRegister(View v) {
@@ -55,11 +69,11 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), AuthAPI.REGISTER_ATTEMPT_FAILED, Toast.LENGTH_LONG).show();
         } else {
             UserCredentials.setInstance(creds);
-        }
-
-        if (UserCredentials.getInstance().getToken() != null) {
+            storage.persistUserData(creds);
+            UserCredentials.setInstance(storage.getUserCredentials());
             Intent intent = new Intent(this, ChatListActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 }

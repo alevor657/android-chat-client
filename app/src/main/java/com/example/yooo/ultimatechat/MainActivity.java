@@ -50,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         if (storage.getUserCredentials() != null) {
             UserCredentials.setInstance(storage.getUserCredentials());
