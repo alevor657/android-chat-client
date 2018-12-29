@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ import io.socket.emitter.Emitter;
 public class ChatListActivity extends AppCompatActivity {
     UserCredentials currentUser;
     ViewGroup chatListLayout;
+    String newChatName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class ChatListActivity extends AppCompatActivity {
 
         currentUser = UserCredentials.getInstance();
         chatListLayout = findViewById(R.id.chatListLayout);
+        newChatName = "";
 
         final View addNewChat = findViewById(R.id.addNewChat);
         addNewChat.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +56,27 @@ public class ChatListActivity extends AppCompatActivity {
 
 
         socket.connect();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.search:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -110,7 +135,6 @@ public class ChatListActivity extends AppCompatActivity {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View addChatForm = Objects.requireNonNull(inflater).inflate(R.layout.add_chat_form, null, false);
         final EditText newChatText = addChatForm.findViewById(R.id.newChatText);
-
         new AlertDialog.Builder(this).setView(addChatForm)
                 .setTitle("Add new chat")
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {

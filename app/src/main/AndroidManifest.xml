@@ -24,6 +24,7 @@
         <activity android:name=".RegisterActivity" android:label="Register" />
         <activity android:name=".ChatListActivity" android:label="ChatList" />
         <activity android:name=".ChatListObject" android:label="ChatListObject" android:launchMode="singleTop" />
+        <activity android:name=".SettingsActivity" android:label="Settings" />
     </application>
 
 </manifest>

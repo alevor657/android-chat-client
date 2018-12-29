@@ -34,10 +34,9 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="cropped" value="true" />
-                                      <entry key="iconShape" value="CIRCLE" />
-                                      <entry key="imageAsset" value="D:\Java\Workspace\android-chat-client\app\src\main\res\mipmap\iconfinder_199_CircledPlus_183316.png" />
-                                      <entry key="outputName" value="add_icon_round" />
+                                      <entry key="backgroundColor" value="3f51b5" />
+                                      <entry key="imageAsset" value="D:\Java\Workspace\android-chat-client\app\src\main\res\settings.png" />
+                                      <entry key="outputName" value="settings_icon" />
                                     </map>
                                   </option>
                                 </PersistentState>

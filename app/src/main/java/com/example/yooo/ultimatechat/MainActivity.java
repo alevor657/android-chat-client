@@ -75,12 +75,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void chatListRedirect(View v) {
-        this.trySignIn();
+        //this.trySignIn();
 
-        if (UserCredentials.getInstance().getToken() != null) {
+        //if (UserCredentials.getInstance().getToken() != null) {
             Intent intent = new Intent(this, ChatListActivity.class);
             startActivity(intent);
-        }
+        //}
     }
 
     public void trySignIn() {
