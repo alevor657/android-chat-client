@@ -2,8 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <Preference
-        app:key="test"
-        android:title="test"
-        android:summary="does stuff"
+        app:key="takePhoto"
+        android:title="Take profile photo"
         android:theme="@style/AppTheme"/>
 </PreferenceScreen>
