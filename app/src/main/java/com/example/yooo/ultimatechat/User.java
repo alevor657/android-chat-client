@@ -27,7 +27,7 @@ public class User implements Serializable {
     }
 
     public String getProfilePictureUrl() {
-        return profilePictureUrl;
+        return AvatarController.AVATARS_FOLDER_URL + "/" + this.username + "_avatar.jpeg";
     }
 
     public void setProfilePictureUrl(String profilePictureUrl) {

@@ -31,7 +31,7 @@ class WebSocketControls {
 
     private static void initSocket() {
         try {
-            mSocket = IO.socket("http://192.168.1.48:1338");
+            mSocket = IO.socket("http://192.168.1.42:1338");
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
